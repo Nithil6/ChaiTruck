@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chai Truck – A Cup of Positeavity</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- THEME COLORS & DESIGN TOKENS --- */
+        :root {
+            --bg-darkest: #0b0c10;
+            --bg-card: #1f2128;
+            --primary-yellow: #f4c430;
+            --gold-gradient: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
+            --text-light: #f5f5f7;
+            --text-muted: #9a9ea6;
+            --border-glow: rgba(244, 196, 48, 0.2);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* --- GLOBAL STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-darkest);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- NAVIGATION --- */
+        header {
+            background: rgba(11, 12, 16, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(244, 196, 48, 0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .brand-text h1 {
+            font-size: 1.4rem;
+            color: var(--primary-yellow);
+            font-weight: 800;
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+
+        .brand-text span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            position: relative;
+            padding: 5px 0;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--primary-yellow);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-yellow);
+            transition: var(--transition);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            padding: 180px 0 120px 0;
+            background: linear-gradient(180deg, rgba(31, 33, 40, 0.2) 0%, rgba(11, 12, 16, 1) 100%);
+            position: relative;
+            text-align: center;
+        }
+
+        .hero-badge {
+            background: rgba(244, 196, 48, 0.1);
+            border: 1px solid var(--primary-yellow);
+            color: var(--primary-yellow);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: inline-block;
+            margin-bottom: 25px;
+        }
+
+        .hero h2 {
+            font-size: 3.8rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        .hero h2 span {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 650px;
+            margin: 0 auto 40px auto;
+        }
+
+        .cta-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-yellow);
+            color: var(--bg-darkest);
+            box-shadow: 0 4px 15px rgba(244, 196, 48, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(244, 196, 48, 0.5);
+        }
+
+        .btn-secondary {
+            border: 2px solid var(--text-light);
+            color: var(--text-light);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: var(--primary-yellow);
+            color: var(--primary-yellow);
+        }
+
+        /* --- FEATURE HIGHLIGHTS --- */
+        .features {
+            padding: 80px 0;
+            background-color: rgba(31, 33, 40, 0.3);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background-color: var(--primary-yellow);
+            margin: 15px auto 0 auto;
+            border-radius: 2px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .feature-card {
+            background-color: var(--bg-card);
+            padding: 35px 25px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(244, 196, 48, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary-yellow);
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* --- INTERACTIVE MENU --- */
+        .menu-section {
+            padding: 80px 0;
+        }
+
+        .menu-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background-color: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .tab-btn:hover, .tab-btn.active {
+            background-color: var(--primary-yellow);
+            color: var(--bg-darkest);
+            border-color: var(--primary-yellow);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .menu-item {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            transition: var(--transition);
+        }
+
+        .menu-item:hover {
+            border-color: rgba(244, 196, 48, 0.15);
+            background-color: rgba(31, 33, 40, 0.6);
+        }
+
+        .menu-info {
+            flex-grow: 1;
+            padding-right: 20px;
+        }
+
+        .menu-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .menu-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .veg-badge {
+            font-size: 0.65rem;
+            color: #2ecc71;
+            border: 1px solid #2ecc71;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .menu-desc {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+        }
+
+        .menu-price {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary-yellow);
+            white-space: nowrap;
+        }
+
+        /* --- COMMUNITY REVIEWS --- */
+        .reviews-section {
+            padding: 80px 0;
+            background-color: rgba(31, 33, 40, 0.3);
+        }
+
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .review-card {
+            background-color: var(--bg-card);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .review-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: #3a3f4d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--primary-yellow);
+            border: 1px solid rgba(244, 196, 48, 0.3);
+        }
+
+        .user-details h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .user-details span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: block;
+        }
+
+        .rating {
+            color: var(--primary-yellow);
+            font-size: 0.8rem;
+            margin-bottom: 12px;
+        }
+
+        .review-text {
+            font-size: 0.92rem;
+            color: #d1d5db;
+            font-style: italic;
+        }
+
+        /* --- HUB & FOUNDERS INFO --- */
+        .about-section {
+            padding: 80px 0;
+        }
+
+        .about-layout {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 50px;
+            align-items: start;
+        }
+
+        .founders-box {
+            background: linear-gradient(145deg, var(--bg-card), #141519);
+            padding: 35px;
+            border-radius: 12px;
+            border: 1px solid rgba(244, 196, 48, 0.05);
+        }
+
+        .founders-box h3 {
+            color: var(--primary-yellow);
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+
+        .founders-list {
+            list-style: none;
+        }
+
+        .founders-list li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .founders-list i {
+            color: var(--primary-yellow);
+        }
+
+        .hubs-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+
+        .hub-tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .hub-tag {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            transition: var(--transition);
+        }
+
+        .hub-tag:hover {
+            border-color: var(--primary-yellow);
+            color: var(--primary-yellow);
+            background: rgba(244, 196, 48, 0.02);
+        }
+
+        /* --- CONTACT & VISUAL MAP --- */
+        .contact-section {
+            padding: 80px 0;
+            background-color: rgba(31, 33, 40, 0.3);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+        }
+
+        .info-pane {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .info-block {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .info-icon {
+            background: rgba(244, 196, 48, 0.1);
+            border: 1px solid var(--primary-yellow);
+            color: var(--primary-yellow);
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .info-content h4 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .info-content p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .map-pane {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(244, 196, 48, 0.15);
+            height: 350px;
+        }
+
+        .map-pane iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            filter: grayscale(0.9) invert(0.9) contrast(1.2);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: var(--bg-darkest);
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        footer p span {
+            color: var(--primary-yellow);
+            font-weight: 600;
+        }
+
+        /* --- RESPONSIVENESS --- */
+        @media (max-width: 968px) {
+            .grid-3, .reviews-grid, .contact-grid, .about-layout {
+                grid-template-columns: 1fr;
+            }
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+            nav ul {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV BAR -->
+    <header>
+        <div class="nav-container">
+            <a href="#" class="brand">
+                <div class="brand-text">
+                    <h1>CHAI TRUCK</h1>
+                    <span>#acupofpositiviTEA</span>
+                </div>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="#home" class="active">Home</a></li>
+                    <li><a href="#menu">Menu</a></li>
+                    <li><a href="#reviews">Reviews</a></li>
+                    <li><a href="#about">Our Story</a></li>
+                    <li><a href="#contact">Find Us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-badge">A Unit of Little Belly LLP</div>
+            <h2>Fueling Your Day With<br><span>A Cup Of Positeavity</span></h2>
+            <p>Premium open-air layout ambiance meets affordable, premium-quality comfort street sips and snacks inside Mahindra World City.</p>
+            <div class="cta-group">
+                <a href="#menu" class="btn btn-primary">Explore Menu</a>
+                <a href="#contact" class="btn btn-secondary">Visit Truck</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CORE FEATURE AMBIANCE HIGHLIGHTS -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">The Truck Experience</h2>
+            <div class="grid-3">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-moon"></i></div>
+                    <h3>Midnight Bliss</h3>
+                    <p>Open all the way until 2:00 AM! Your prime escape spot for midnight cravings and post-shift hangouts with friends.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-truck"></i></div>
+                    <h3>Unique Setup</h3>
+                    <p>Climb onto our premium rooftop cabin seating arrangement built straight onto the truck container framework.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-sterling-sign"></i></div>
+                    <h3>Smart Value</h3>
+                    <p>Designed around daily fresh ingredient tracking checks to achieve structural wallet-friendly menu pricing.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DYNAMIC COMPLETE VALUE MENU -->
+    <section class="menu-section" id="menu">
+        <div class="container">
+            <h2 class="section-title">Signature Menu</h2>
+            
+            <div class="menu-tabs">
+                <button class="tab-btn active" onclick="filterMenu('combos')">Exclusive Combos</button>
+                <button class="tab-btn" onclick="filterMenu('flasks')">Hot Flasks (Serves 4-5)</button>
+                <button class="tab-btn" onclick="filterMenu('munchies')">Munchies & Mains</button>
+                <button class="tab-btn" onclick="filterMenu('maggi')">Maggi Station</button>
+                <button class="tab-btn" onclick="filterMenu('lemonades')">Lemonades & Juices</button>
+                <button class="tab-btn" onclick="filterMenu('milkshakes')">Classic Milkshakes</button>
+                <button class="tab-btn" onclick="filterMenu('premium')">Premium Cold Shakes & Creams</button>
+            </div>
+
+            <div class="menu-grid" id="menu-display">
+                <!-- Data loaded dynamically through JavaScript array block below -->
+            </div>
+        </div>
+    </section>
+
+    <!-- LOCAL GUIDE CRITICS & REVIEWS -->
+    <section class="reviews-section" id="reviews">
+        <div class="container">
+            <h2 class="section-title">Community Vibes</h2>
+            <div class="reviews-grid">
+                <div class="review-card">
+                    <div>
+                        <div class="review-user">
+                            <div class="avatar">SS</div>
+                            <div class="user-details">
+                                <h4>Sanjay Siva</h4>
+                                <span>Local Guide</span>
+                            </div>
+                        </div>
+                        <div class="rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                        <p class="review-text">"Midnight Chai Bliss at Mahindra World City! My favorite chai truck - cozy, lively, and perfect at midnight. Don’t miss sitting upstairs on the truck."</p>
+                    </div>
+                </div>
+                <div class="review-card">
+                    <div>
+                        <div class="review-user">
+                            <div class="avatar">RV</div>
+                            <div class="user-details">
+                                <h4>Ramya Venugopal</h4>
+                                <span>Local Guide</span>
+                            </div>
+                        </div>
+                        <div class="rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                        <p class="review-text">"Amazing place in MWC to have chai! Perfect ambience to hangout. This place is open till midnight 1. Very delicious tea."</p>
+                    </div>
+                </div>
+                <div class="review-card">
+                    <div>
+                        <div class="review-user">
+                            <div class="avatar">CG</div>
+                            <div class="user-details">
+                                <h4>Chandrasekar Ganesan</h4>
+                                <span>Local Guide</span>
+                            </div>
+                        </div>
+                        <div class="rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                        <p class="review-text">"Chai and scrambled egg sandwich were great, which was served with amazing fries. The canopy above gives a nice view."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOUNDERS & NETWORK DISTRIBUTION INFO -->
+    <section class="about-section" id="about">
+        <div class="container">
+            <h2 class="section-title">Our Operational Network</h2>
+            <div class="about-layout">
+                <div class="hubs-card">
+                    <h3>Multi-City Footprint</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">What started as a unique single truck footprint has scaled into an extensive integrated network across primary regions.</p>
+                    <div class="hub-tag-container">
+                        <div class="hub-tag">Mahindra World City Outlet</div>
+                        <div class="hub-tag">Navalur Hub</div>
+                        <div class="hub-tag">Tambaram Hub</div>
+                        <div class="hub-tag">Medavakkam Hub</div>
+                        <div class="hub-tag">Perumbakkam Hub</div>
+                        <div class="hub-tag">Perungudi Hub</div>
+                        <div class="hub-tag">Vadapalani Hub</div>
+                        <div class="hub-tag">Anna Nagar Hub</div>
+                        <div class="hub-tag">White Town (Pondicherry)</div>
+                        <div class="hub-tag">Kamaraj Saalai (Pondicherry)</div>
+                        <div class="hub-tag">R S Puram (Coimbatore)</div>
+                    </div>
+                </div>
+                <div class="founders-box">
+                    <h3>The Minds Behind The Sip</h3>
+                    <ul class="founders-list">
+                        <li><i class="fa-solid fa-user-tie"></i> <div><strong>Muhamed Shafeel T</strong><br><small style="color: var(--text-muted);">Co-Founder & Corporate Management</small></div></li>
+                        <li><i class="fa-solid fa-user-tie"></i> <div><strong>Harris Ebrahim</strong><br><small style="color: var(--text-muted);">Co-Founder & Strategic Operations</small></div></li>
+                        <li><i class="fa-solid fa-user-tie"></i> <div><strong>Arif Ismayil</strong><br><small style="color: var(--text-muted);">Co-Founder & Partnerships</small></div></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT STATIONS & ACTIVE ACCESSIBILITY MAP -->
+    <section class="contact-section" id="contact">
+        <div class="container">
+            <h2 class="section-title">Locate The Truck</h2>
+            <div class="contact-grid">
+                <div class="info-pane">
+                    <div class="info-block">
+                        <div class="info-icon"><i class="fa-solid fa-location-dot"></i></div>
+                        <div class="info-content">
+                            <h4>Address</h4>
+                            <p>The Canopy, Mahindra World City, Opp. NCR Campus, Thirutheri R.F., Tamil Nadu 603004.</p>
+                        </div>
+                    </div>
+                    <div class="info-block">
+                        <div class="info-icon"><i class="fa-solid fa-phone"></i></div>
+                        <div class="info-content">
+                            <h4>Direct Hotline</h4>
+                            <p>075502 04146</p>
+                        </div>
+                    </div>
+                    <div class="info-block">
+                        <div class="info-icon"><i class="fa-solid fa-clock"></i></div>
+                        <div class="info-content">
+                            <h4>Operational Framework</h4>
+                            <p>Open Daily: Late Afternoon Hours until 2:00 AM Night.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="map-pane">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3890.733519803157!2d80.0031868!3d12.730755!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a52fbc36829775f%3A0x633513a96874df02!2sThe%20Canopy!5e0!3m2!1sen!2sin!4v1710000000000!5m2!1sen!2sin" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER STAMP -->
+    <footer>
+        <p>&copy; 2026 <span>Chai Truck</span> (Little Belly LLP). All Creative Packaging Solutions Protected.</p>
+    </footer>
+
+    <!-- INTERACTIVE ENGINE JAVASCRIPT BLOCK -->
+    <script>
+        const menuData = {
+            combos: [
+                { name: "Dum Tea (Serves 4-5) + French Fries", price: "₹249.00", desc: "Milk tea with a dash of French fries to add a twist to your daily snack." },
+                { name: "French Fries + Strawberry Ice Cream Milkshake", price: "₹249.00", desc: "Crispy on the outside and soft inside potato sticks accompanied by strawberry milkshake." },
+                { name: "Ginger Tea Flask + Peanut Butter Toast", price: "₹229.00", desc: "Our special ginger tea flask with an easily snackable peanut butter toast." },
+                { name: "Instant Coffee (Serves 4-5) + 1 Peanut Butter Toast", price: "₹219.00", desc: "Our special coffee with a delightful peanut butter toast." },
+                { name: "Instant Coffee (Serves 4-5) + 1 Plain Maggi", price: "₹209.00", desc: "The perfect snack of our favorite Maggi noodles and aromatic coffee." },
+                { name: "Tea Flask + Maggi", price: "₹209.00", desc: "Choose from our best of teas and enjoy it with our hot side of Maggi." },
+                { name: "Veg Cheese Sandwich + Grape Lemon Juice", price: "₹159.00", desc: "Simple cheese sandwich accompanied by a cooling combination of grape juice and a tinge of lemon." },
+                { name: "Grape Juice + Pineapple Juice + Papaya Juice Combo", price: "₹289.00", desc: "Quench your thirst with this triple fruity concoction at 350 ml each." },
+                { name: "Oreo Milkshake + KitKat Milkshake + Snickers Milkshake Combo", price: "₹339.00", desc: "Quench your thirst with the ultimate milky combo at 350ml each." },
+                { name: "Pineapple Lemonade + Grape Lemonade + Mint Lemonade Combo", price: "₹199.00", desc: "Quench your thirst with the tangy bundle combo at 350 ml each." }
+            ],
+            flasks: [
+                { name: "Filter Coffee Flask (Serves 4-5)", price: "₹189.00", desc: "Savour the classic taste of traditional South Indian filter coffee served in a 500 ml flask." },
+                { name: "Elaichi Tea Flask (Serves 4-5)", price: "₹179.00", desc: "Delightful tea steeped with milk and infused with aromatic elaichi flavors." },
+                { name: "Hot Badam Flask (Serves 4-5)", price: "₹169.00", desc: "Healthy and rich almonds blended with milk and boiled until thick." },
+                { name: "Boost Flask (Serves 4-5)", price: "₹169.00", desc: "Irresistible warm drink of blended milk and malted milk powder." },
+                { name: "Horlicks Flask (Serves 4-5)", price: "₹169.00", desc: "Irresistible comforting drink of blended milk and malted milk Horlicks powder." },
+                { name: "Masala Tea Flask (Serves 4-5)", price: "₹169.00", desc: "Delightful tea steeped with milk and infused with ginger, cardamom, and secret flavors." },
+                { name: "Ginger Tea Flask (Without Sugar - Serves 4-5)", price: "₹149.00", desc: "Delightful sugar-free tea steeped with milk and infused with real ginger elements." },
+                { name: "Dum Tea Flask (Serves 4-5)", price: "₹129.00", desc: "Flavourful traditional tea steeped deeply with milk structures." },
+                { name: "Lemon Tea Flask (Serves 4-5)", price: "₹129.00", desc: "A clean refreshing form of tea liquor infused with fresh lemon juice slices." },
+                { name: "Ginger Black Tea Flask (Serves 4-5)", price: "₹119.00", desc: "Strong tea with ginger which has been through a long oxidation process." },
+                { name: "Black Tea Flask (Serves 4-5)", price: "₹109.00", desc: "Strong tea which has been through an extended oxidation process for a deep brew." }
+            ],
+            munchies: [
+                { name: "Aloo Tikki", price: "₹149.00", desc: "Perfect seasoned crisp potato patties fried golden brown." },
+                { name: "Cheese Corn Nuggets", price: "₹149.00", desc: "Crisp outer layer tracking creamy melted cheese mixed with sweet corn grains." },
+                { name: "Cheese Shits", price: "₹149.00", desc: "Deliciously bite-sized deep fried savory cheese snack nuggets." },
+                { name: "Masala French Fries", price: "₹149.00", desc: "Potatoes cut in thin strips, deep fried twice, well seasoned with salt and spicy masala mix." },
+                { name: "Potato Pops", price: "₹149.00", desc: "Bite-sized, crunch-loaded golden tater tots seasoned with salt." },
+                { name: "Potato Smileys", price: "₹149.00", desc: "Happy smiling faces on your plate, made with mashed potatoes and deep fried." },
+                { name: "Veg Nuggets", price: "₹149.00", desc: "Crispy crusted nuggets packed inside with a seasoned mixed vegetable filling." },
+                { name: "Corn Nuggets", price: "₹149.00", desc: "Crispy small nuggets filled with sweet corn and smooth cream paste." },
+                { name: "Roasty Rounds", price: "₹149.00", desc: "Perfect golden fried circular potato crowns with a textured crispy bite." },
+                { name: "Veg Burger", price: "₹139.00", desc: "Goodness of vegetables, mixed veg patty coated with crumbs and fried, served in burger buns." },
+                { name: "French Fries", price: "₹129.00", desc: "Potatoes cut in allumette style, deep fried twice, well seasoned with salt." },
+                { name: "Paneer Sandwich", price: "₹129.00", desc: "Lip smacking paneer chunks tossed with chopped veggies, stuffed in a sandwich and grilled." },
+                { name: "Paneer Parotta Roll", price: "₹119.00", desc: "Kid pleaser, paneer cubes and vegetable masala wrapped tightly inside a flaky Malabar parotta." },
+                { name: "Corn Sandwich", price: "₹99.00", desc: "Lip smacking, spicy sweet corn tossed with veggies, stuffed in a sandwich and grilled." },
+                { name: "Veg Parotta Roll", price: "₹99.00", desc: "Nutritious and healthy mix veggies and masala stuffed in a rolled Malabar parotta with herbs." },
+                { name: "Veg Sandwich", price: "₹89.00", desc: "Healthy grilled sandwich with cucumber, tomato, capsicum and a generous amount of mayonnaise." },
+                { name: "Peanut-Butter Toast", price: "₹89.00", desc: "A piece of perfectly toasted bread smeared with crunchy, rich peanut butter." }
+            ],
+            maggi: [
+                { name: "Chilly Cheese Maggi", price: "₹109.00", desc: "Piping hot instant noodles tossed with spicy chillies and loaded with grated cheese toppings." },
+                { name: "Corn And Carrot Maggi", price: "₹109.00", desc: "Delicious instant noodles cooked with sweet corn kernels and finely diced fresh carrots." },
+                { name: "Corn Maggi", price: "₹109.00", desc: "Delicious and healthy Maggi dish prepared with diced vegetables and juicy golden corn." },
+                { name: "Peri Peri Maggi", price: "₹109.00", desc: "Fiery street style instant noodles tossed in our special spicy African peri peri seasoning." },
+                { name: "Tandoori Maggi", price: "₹109.00", desc: "Noodles infused with a rich, smoky tandoori masala paste and aromatic charcoal vibes." },
+                { name: "Tomato Maggi", price: "₹109.00", desc: "Tangy twist noodles cooked in a thick savory tomato reduction sauce base with spices." },
+                { name: "Veg Maggi", price: "₹89.00", desc: "Your regular classic comfort Maggi vegetable noodle served piping hot." }
+            ],
+            lemonades: [
+                { name: "Ginger Lemon Soda (350ml)", price: "₹79.00", desc: "Powerful bubbly flavors of water and soda infused with clean flavors of ginger and lemon." },
+                { name: "Grape Lemon Soda (350ml)", price: "₹79.00", desc: "Classic lemonade in soda meets antioxidant-rich pureed black grapes." },
+                { name: "Lime Mint Soda (350ml)", price: "₹79.00", desc: "Perfect chilled sparkling blend of fresh lemon juice, soda, and hand-torn mint leaves." },
+                { name: "Pineapple Lemon Soda (350ml)", price: "₹79.00", desc: "Classic sparkling lemonade in soda meets sweet tropical pureed pineapple chunks." },
+                { name: "Watermelon Lemon Soda (350ml)", price: "₹79.00", desc: "Classic lemonade meets freshly pureed watermelon and blended with fizzy soda." },
+                { name: "Ginger Lemon (350ml)", price: "₹69.00", desc: "Powerful detox drink of still water infused with sharp flavors of ginger and lemon." },
+                { name: "Grape Lemon (350ml)", price: "₹69.00", desc: "Classic still lemonade meets the vitamin C rich texture of pureed purple grapes." },
+                { name: "Sweet Lemon Soda (350ml)", price: "₹69.00", desc: "Classic refreshing mocktail with a blend of sugar, lime juice, and a splash of club soda." },
+                { name: "Lime Mint Cooler (350ml)", price: "₹69.00", desc: "Perfect non-fizzy chilled blend of freshly squeezed lemon juice and mint." },
+                { name: "Pineapple Lemon (350ml)", price: "₹69.00", desc: "Classic still lemonade base balancing out sweet pureed gold pineapple." },
+                { name: "Watermelon Lemon (350ml)", price: "₹69.00", desc: "Classic summer still lemonade matching up with freshly pureed watermelon." },
+                { name: "Salt & Sweet Fresh Lemon (350ml)", price: "₹59.00", desc: "Refreshing still water infused with lemon juice, salt grains, and sugar syrup fractions." },
+                { name: "Lemon Juice Sweet (350ml)", price: "₹59.00", desc: "Refreshing traditional iced water baseline infused with lemon juice and salt." },
+                { name: "Mango Juice (350ml)", price: "₹119.00", desc: "Enjoy the rich pulpy freshness of the absolute King of Fruits inside a bottle." },
+                { name: "Pomegranate Juice (350ml)", price: "₹109.00", desc: "Antioxidant-rich fresh pure juice prepared purely from pomegranate seeds. (No milk added)." },
+                { name: "Papaya Juice (350ml)", price: "₹99.00", desc: "Improve your digestion with our sweet, thick-pulped papaya fruit juice juice juice." },
+                { name: "Pineapple Juice (350ml)", price: "₹99.00", desc: "Fresh tropical juice of defense and antioxidant-rich pineapple pieces." },
+                { name: "Watermelon Juice (350ml)", price: "₹99.00", desc: "Ultimate summer cooler to hydrate and cool your body down with pure watermelon juice." },
+                { name: "Mosambi Juice (350ml)", price: "₹99.00", desc: "Fresh sweet lime juice citrus burst packed with natural minerals." }
+            ],
+            milkshakes: [
+                { name: "Dragon Milkshake", price: "₹139.00", desc: "Exotic and visually vibrant pink shake blended using real dragon fruit pulps." },
+                { name: "Mango Milkshake", price: "₹139.00", desc: "Smooth and creamy concoction of summery rich mangoes with cold milk and sugar." },
+                { name: "Apple Milkshake", price: "₹119.00", desc: "Healthy and cooling milkshake made by blending sweet apples with frozen milk chunks." },
+                { name: "Badam Milkshake", price: "₹119.00", desc: "Healthy shake loaded with nutrients from a blend of real almonds, topped with sliced nuts." },
+                { name: "Banana Milkshake", price: "₹119.00", desc: "Up your energy loops with ripe banana cuts churned with chilled milk and sugar fractions." },
+                { name: "Black Currant Milkshake", price: "₹119.00", desc: "Cold and creamy purple shake prepared by blending black currant syrup fruit extracts with milk." },
+                { name: "Cold Boost Shaker", price: "₹119.00", desc: "Delicious, hyper-familiar chocolate malt drink blended directly into iced cold milk." },
+                { name: "Cold Coffee", price: "₹119.00", desc: "Your caffeine fix, aromatic brewed coffee shot blended with iced chilled thick milk." },
+                { name: "Cold Horlicks Shaker", price: "₹119.00", desc: "Delicious retro malted Horlicks grains blended into chilled creamy milk base lines." },
+                { name: "Dates Milkshake", price: "₹119.00", desc: "Healthy and deeply rich shake combining blended Arabian sweet dates in frozen milk." },
+                { name: "KitKat Milkshake", price: "₹119.00", desc: "Irresistible classic blend of chocolate candy KitKat bars broken down into frozen milk." },
+                { name: "Oreo Milkshake", price: "₹119.00", desc: "Frozen milk, Oreo biscuits, and rich chocolate sauce pureed, topped with cookie crumbs." },
+                { name: "Snickers Milkshake", price: "₹119.00", desc: "A rich snickers shake with a perfect mix of chocolate syrup and real snicker nut chunks." },
+                { name: "Peanut-Butter Milkshake", price: "₹119.00", desc: "Sweet and slightly salty milkshake packed full of premium creamy peanut butter flavor." },
+                { name: "Strawberry Milkshake", price: "₹119.00", desc: "Pink charm of our chilled drink made with sweet strawberries churned with milk." },
+                { name: "Blueberry Milkshake", price: "₹119.00", desc: "Beautiful purple shake mixing chilled milk, sugar base, and real blueberry pearl crush." },
+                { name: "Kiwi Milkshake", price: "₹119.00", desc: "Tangy and sweet signature blend of green kiwis, sugar, and frozen milk structures." },
+                { name: "Litchi Milkshake", price: "₹119.00", desc: "A smooth delicate drink prepared by blending litchi fruit crush with frozen milk profiles." },
+                { name: "Pomegranate Milkshake", price: "₹119.00", desc: "Healthy and cooling milkshake made by blending ruby pomegranate pearls with frozen milk." },
+                { name: "Rose Milk", price: "₹119.00", desc: "Refreshing old school aroma of sweet rose syrup stirred in iced frozen thick milk." },
+                { name: "Fig Milkshake", price: "₹119.00", desc: "Nutritious shake rich with the earthy sweetness of natural dried figs and frozen milk blocks." },
+                { name: "Musk Melon Milkshake", price: "₹119.00", desc: "Hydrating seasonal musk melon pieces whipped smoothly into cold milk bases." },
+                { name: "Sapota Milk Shake", price: "₹119.00", desc: "Sweet, grainy textured classic chikoo fruit shake blended smoothly into milk layers." },
+                { name: "Custard Apple Milkshake", price: "₹119.00", desc: "Rich sweet seasonal sitaphal fruit pulp churned heavily alongside frozen milk locks." }
+            ],
+            premium: [
+                { name: "Jack Fruit Milkshake", price: "₹149.00", desc: "Delicious highly unique blend of frozen milk, tropical jackfruit pulps and sugar. Extremely rich!" },
+                { name: "Tender Coconut Milkshake", price: "₹149.00", desc: "Healthy and cooling thick milkshake made by blending tender coconut malai with frozen milk." },
+                { name: "Butterscotch Ice Cream Milkshake", price: "₹149.00", desc: "Pure indulgence with this chilled milk heavy churned with real butterscotch ice cream scoops." },
+                { name: "Chocolate Ice Cream Milkshake", price: "₹149.00", desc: "Always a favorite deep shake combining rich cocoa chocolate syrups, milk, and chocolate ice cream." },
+                { name: "Mango Ice Cream Milkshake", price: "₹149.00", desc: "Smooth, thick decadent blend matching fresh sweet mango slices, sugar, and vanilla mango ice cream." },
+                { name: "Pista Ice Cream Milkshake", price: "₹149.00", desc: "Perfect gourmet blend of green pista ice cream and whole milk, topped off with crushed rich pistachios." },
+                { name: "Strawberry Ice Cream Milkshake", price: "₹149.00", desc: "Double pink charm of our chilled drink featuring strawberry ice cream churned with whole cream milk." },
+                { name: "Vanilla Ice Cream Milkshake", price: "₹149.00", desc: "Classic rich, ultra thick shake made directly with pure dairy milk and premium vanilla ice cream." },
+                { name: "Sharjah Milkshake", price: "₹119.00", desc: "Famous south-style delicious blend of frozen milk, sweet bananas, booster spikes, and dates. It is incredibly rich!" },
+                { name: "Arabian Falooda Dessert", price: "₹169.00", desc: "Richer version of traditional falooda loaded with vermicelli, rose syrup, fruits, dry fruits, nuts, and ice cream." },
+                { name: "Fruit Salad With Ice Cream", price: "₹149.00", desc: "A colorful plate of fresh seasonal fruit cuts topped with a giant premium melting ice cream scoop." },
+                { name: "Avil Milk Dessert", price: "₹119.00", desc: "Unique Malabar breakthrough blend mixing frozen milk layers, mashed robusta banana, and roasted rice flakes." },
+                { name: "Virgin Mojito (350ml)", price: "₹119.00", desc: "Classic fresh lime wedges and hand torn mint leaves muddled with sugar syrup and topped with cold soda." },
+                { name: "Strawberry / Blueberry Mojito", price: "₹119.00", desc: "Fizzy muddled mint and lemon refresher updated with premium dark berry syrup concentrations." },
+                { name: "Kiwi / Litchi / Orange Mojito", price: "₹119.00", desc: "Crisp sparkling soda mocktails loaded with distinct fruit juice bases and muddled citrus skins." },
+                { name: "Mango Lassi", price: "₹99.00", desc: "Enjoy the tropical summer drink with pure mango pulp heavily churned with thick curd and sugar." },
+                { name: "Fruit Lassi (Banana/Strawberry/Pineapple)", price: "₹99.00", desc: "Creamy traditional dahi lassi blended with targeted real fruit syrups." },
+                { name: "Mint / Mixed Fruit Lassi", price: "₹99.00", desc: "Thick savory sweet yogurt blend options matching cooling mint or mixed fruit chops." },
+                { name: "Classic Sweet Lassi", price: "₹79.00", desc: "Thick cooling north Indian Punjabi style drink made from churning rich country curd and white sugar." }
+            ]
+        };
+
+        function filterMenu(category) {
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+
+            const display = document.getElementById('menu-display');
+            display.innerHTML = '';
+
+            menuData[category].forEach(item => {
+                display.innerHTML += `
+                    <div class="menu-item">
+                        <div class="menu-info">
+                            <div class="menu-header">
+                                <span class="menu-title">${item.name}</span>
+                                <span class="veg-badge">Veg</span>
+                            </div>
+                            <p class="menu-desc">${item.desc}</p>
+                        </div>
+                        <div class="menu-price">${item.price}</div>
+                    </div>
+                `;
+            });
+        }
+
+        window.onload = function() {
+            filterMenu('combos');
+        };
+    </script>
+</body>
+</html>
